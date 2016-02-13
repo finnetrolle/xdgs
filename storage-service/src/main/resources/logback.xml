@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <property name="MAX_FILE_SIZE" value="5MB"/>
+    <property name="MAX_FILES" value="20"/>
+    <property name="PATH" value="/var/logs/xdgs"/>
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{0} - %m%n"/>
+    <property name="NAME" value="storage"/>
+
+    <include resource="logback-default-file.xml" />
+
+    <root level="INFO">
+        <appender-ref ref="file"/>
+    </root>
+
+</configuration>
