@@ -1,4 +1,4 @@
-package ru.finnetrolle.xdgs.face.dto.external;
+package ru.finnetrolle.xdgs.face.dto.external.communication;
 
 import java.util.Objects;
 

@@ -26,7 +26,7 @@ public class AuthService {
     }
 
     public boolean checkAuth(String username, String passwordNoHash) throws ServiceLayerException {
-        return (authProducer.signIn(username, DigestUtils.sha256Hex(passwordNoHash)) != null);
+        return authProducer.signIn(username, DigestUtils.sha256Hex(passwordNoHash)) != null;
     }
 
 }

@@ -1,7 +1,11 @@
 package ru.finnetrolle.xdgs.storage.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.finnetrolle.xdgs.face.dto.internal.entity.UserDto;
+import ru.finnetrolle.xdgs.storage.model.entity.User;
+import ru.finnetrolle.xdgs.storage.model.repository.UserRepository;
+import ru.finnetrolle.xdgs.storage.transformer.Mimic;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,25 +16,26 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class AuthStorageService {
 
-    private final Map<String, UserDto> users = new ConcurrentHashMap<>();
+    @Autowired
+    private UserRepository repository;
 
     public UserDto add(String username, String password) throws Exception {
-        UserDto user = users.get(username);
-        if (user != null) {
-            throw new Exception();
-        } else {
-            user = new UserDto(username, password);
-            users.put(username, user);
-            return user;
+        User user = repository.findOne(username);
+        if (user == null) {
+            user = new User();
+            user.setName(username);
+            user.setPass(password);
+            user.setActive(true);
+            user = repository.save(user);
+            return new UserDto(user.getName(), user.getPass());
         }
+        throw new Exception();
     }
 
     public UserDto get(String username, String password) throws Exception {
-        if (users.containsKey(username)) {
-            UserDto dto = users.get(username);
-            if (dto.getPasswordHash().equals(password)) {
-                return dto;
-            }
+        User user = repository.findOne(username);
+        if (user != null && user.getPass().equals(password)) {
+            return Mimic.Entity.user.apply(user);
         }
         throw new Exception();
     }

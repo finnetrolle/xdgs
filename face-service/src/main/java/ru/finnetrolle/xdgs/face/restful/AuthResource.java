@@ -4,13 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.finnetrolle.xdgs.face.dto.external.SignInRequestDto;
+import ru.finnetrolle.xdgs.face.dto.external.communication.LongPollingResponseDto;
+import ru.finnetrolle.xdgs.face.dto.external.communication.SignInRequestDto;
+import ru.finnetrolle.xdgs.face.dto.external.dictionary.Command;
 import ru.finnetrolle.xdgs.face.exception.LoginFailedException;
 import ru.finnetrolle.xdgs.face.exception.UserAlreadyExistsException;
 import ru.finnetrolle.xdgs.face.service.AuthService;
 import ru.finnetrolle.xdgs.face.service.UserSessionService;
 
-import javax.annotation.PostConstruct;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -75,7 +76,7 @@ public class AuthResource {
     public Response signIn(SignInRequestDto data){
         try {
             if (authService.checkAuth(data.getUsername(), data.getPassword())) {
-                return Response.ok(userSessionService.addSession(data.getUsername())).build();
+                return Response.ok(new LongPollingResponseDto(userSessionService.addSession(data.getUsername()), Command.IDLE)).build();
             }
             return Response.status(Response.Status.UNAUTHORIZED).build();
         } catch (Exception e) {
